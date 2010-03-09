@@ -21,24 +21,14 @@
 
 */
 
-#ifndef COLLISION_H
-#define COLLISION_H
+#include "GameObjects/Player.hpp"
 
-#include "GameObjects/GameObject.hpp"
-
-class Collision
+Player::Player(int id, int x, int y, int width, int height, bool gravityAffected) : GameObject(id, x, y, width, height, gravityAffected)
 {
-public :
-    Collision();
-    Collision(GameObject::Type type, GameObject* ptr);
 
-    GameObject::Type getType() { return this->collided_type; }
-    GameObject* getPtr() { return this->ptr; }
+}
 
-private :
-    GameObject::Type collided_type;
+Player::~Player()
+{
 
-    GameObject *ptr;
-};
-
-#endif // COLLISION_H
+}

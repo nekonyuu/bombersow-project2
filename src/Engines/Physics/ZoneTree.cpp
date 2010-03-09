@@ -41,7 +41,7 @@ ZoneTree::~ZoneTree()
     delete childNodes;
 }
 
-void ZoneTree::AddGO(GameObject* go)
+void ZoneTree::addGO(GameObject* go)
 {
     // We start to work only if the object is in the zone of the node, and if go isn't NULL
     if (go && groundZone.Intersects(go->getRect()))
@@ -73,9 +73,9 @@ void ZoneTree::AddGO(GameObject* go)
                 */
                 for (int j = 0; j < 4; j++)
                 {
-                    childNodes[j]->AddGO(gameObjects[i]);
+                    childNodes[j]->addGO(gameObjects[i]);
                     // We add the new object too at the same time
-                    childNodes[j]->AddGO(go);
+                    childNodes[j]->addGO(go);
                 }
             }
 
@@ -90,7 +90,7 @@ void ZoneTree::AddGO(GameObject* go)
 
 }
 
-void ZoneTree::DeleteGO(GameObject* go)
+void ZoneTree::deleteGO(GameObject* go)
 {
     if(go)
     {
@@ -108,7 +108,7 @@ void ZoneTree::DeleteGO(GameObject* go)
     }
 }
 
-Collision ZoneTree::DetectCollisions(GameObject* go)
+Collision ZoneTree::detectCollisions(GameObject* go)
 {
     if(go)
     {

@@ -22,25 +22,69 @@
 */
 
 #include "Engines/Physics/PhysicsEngine.hpp"
+#include "GameObjects/Player.hpp"
 
-PhysicsEngine::PhysicsEngine(int width, int height) : gameObjectsToNode(), zonesTree(NULL, NULL, 0, 0, width, height, gameObjectsToNode)
+PhysicsEngine::PhysicsEngine(int width, int height, Config& cfg) : gameObjectsToNode(), zonesTree(NULL, NULL, 0, 0, width, height, gameObjectsToNode), config(cfg)
 {
 
 }
 
 void PhysicsEngine::AddGO(GameObject* go)
 {
-    zonesTree.AddGO(go);
+    zonesTree.addGO(go);
 }
 
 void PhysicsEngine::DeleteGO(GameObject* go)
 {
-    gameObjectsToNode[go]->DeleteGO(go);
+    gameObjectsToNode[go]->deleteGO(go);
 }
 
 void PhysicsEngine::UpdateGO(GameObject* go)
 {
-    gameObjectsToNode[go]->DeleteGO(go);
-    zonesTree.AddGO(go);
+    // Apply Gravity
+    if(go->getType() == GameObject::Player)
+    {
+        Player *plr = (Player*) go;
+
+        if(!plr->isDead())
+        {
+            float playerClockTick = plr->getClockTick();
+            int speedY = plr->getSpeedVector().y + config.getPhysicsGravitySpeed() * playerClockTick * config.getPhysicsGravityCoef(), relativeY = speedY * playerClockTick;
+
+            if(plr->getHeight() + plr->getY() + relativeY <= config.getScreenHeight() && plr->getY() + relativeY > 0)
+            {
+                plr->setRelativeY(relativeY);
+                // Replace the go correctly in the tree
+                gameObjectsToNode[go]->deleteGO(go);
+                zonesTree.addGO(go);
+
+                Collision col = gameObjectsToNode[go]->detectCollisions(go);
+                if(col.getPtr() != NULL)
+                {
+                    plr->setRelativeY(-relativeY);
+                    gameObjectsToNode[go]->deleteGO(go);
+                    zonesTree.addGO(go);
+                    plr->setJumpState(Player::NoJump);
+                }
+                plr->setSpeedY(speedY);
+            }
+            else if(plr->getHeight() + plr->getY() + relativeY > config.getScreenHeight())
+            {
+                plr->setY(config.getScreenHeight() - plr->getHeight());
+                gameObjectsToNode[go]->deleteGO(go);
+                zonesTree.addGO(go);
+                plr->setSpeedY(0);
+                plr->setJumpState(Player::NoJump);
+            }
+            else
+                plr->setSpeedY(speedY);
+        }
+    }
+    // TODO : Gravity for Bullets & Particles
+    else
+    {
+        gameObjectsToNode[go]->deleteGO(go);
+        zonesTree.addGO(go);
+    }
 }
 

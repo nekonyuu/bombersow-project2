@@ -21,24 +21,43 @@
 
 */
 
-#ifndef COLLISION_H
-#define COLLISION_H
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include <iostream>
+
+#include <SFML/Network.hpp>
 
 #include "GameObjects/GameObject.hpp"
 
-class Collision
+class Player : public GameObject
 {
 public :
-    Collision();
-    Collision(GameObject::Type type, GameObject* ptr);
+    enum JumpType { NoJump, Simple, Double };
+    Player(int, int, int, int, int, bool);
+    virtual ~Player();
 
-    GameObject::Type getType() { return this->collided_type; }
-    GameObject* getPtr() { return this->ptr; }
+    bool isDead() { return dead; }
+    void setJumpState(Player::JumpType jt) { jumpState = jt; }
+    Player::JumpType getJumpState() { return jumpState; }
 
-private :
-    GameObject::Type collided_type;
+protected :
+    sf::String name;
+    std::string charName;
+    sf::IPAddress playerIP;
+    int life;
+    sf::Clock respawnTimer;
+    bool dead;
+    Player::JumpType jumpState;
 
-    GameObject *ptr;
+    sf::Clock weaponTimerReload;
+
+    bool jetpack;
+
+    int frags, killed;
+
+    sf::SocketTCP* listenSocket;
+    bool connected, ready;
 };
 
-#endif // COLLISION_H
+#endif // PLAYER_H
