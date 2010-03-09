@@ -22,13 +22,16 @@
 */
 
 #include "Engines/Physics/Collision.hpp"
+#include "GameObjects/GameObject.hpp"
 
 Collision::Collision()
 {
-
+    this->collided_type = GameObject::Generic;
+    this->ptr = NULL;
 }
 
 Collision::Collision(GameObject::Type type, GameObject* ptr)
 {
-
+    this->collided_type = type;
+    this->ptr = ptr;
 }

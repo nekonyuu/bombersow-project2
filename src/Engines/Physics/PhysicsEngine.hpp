@@ -28,11 +28,12 @@
 
 #include "Engines/Physics/ZoneTree.hpp"
 #include "GameObjects/GameObject.hpp"
+#include "System/Config.hpp"
 
 class PhysicsEngine
 {
 public :
-    PhysicsEngine(int width, int height);
+    PhysicsEngine(int width, int height, Config& config);
     ~PhysicsEngine();
 
     void AddGO(GameObject*);
@@ -44,6 +45,8 @@ private :
     std::map<GameObject*, ZoneTree*> gameObjectsToNode;
 
     ZoneTree zonesTree;
+
+    Config& config;
 };
 
 #endif // PHYSICSENGINE_H

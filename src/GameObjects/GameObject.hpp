@@ -32,13 +32,16 @@ public :
     enum Type { Generic, Player, Damager, Environment, Particle };
 
     GameObject();
-    GameObject(unsigned int id, int x, int y, int sizeX, int sizeY, bool gravityAffected);
-    GameObject(unsigned int id, int x, int y, int sizeX, int sizeY, bool gravityAffected, GameObject::Type type);
+    GameObject(int, int, int, int, int, bool);
+    GameObject(int, int, int, int, int, bool, GameObject::Type);
     ~GameObject();
 
     int getID() { return this->id; }
     void setX(int x) { this->x = x; }
+    void setRelativeX(int x) { this->x += x; }
     void setY(int y) { this->y = y; }
+    void setRelativeY(int y) { this->y += y; }
+    void setPosition(int x, int y) { this->x = x; this->y = y; }
     int getX() { return this->x; }
     int getY() { return this->y; }
     int getWidth() { return this->width; }
@@ -47,11 +50,18 @@ public :
     void setGravityInfluence(bool b) { this->gravityAffected = b; }
     GameObject::Type getType() { return this->type; }
     sf::Rect<int> getRect() { return sf::Rect<int>(x, y, x + width, y + height); }
+    sf::Vector2i getSpeedVector() { return speedVector; }
+    void setSpeedX(int x) { this->speedVector.x = x; }
+    void setSpeedY(int y) { this->speedVector.y = y; }
+
+    float getClockTick();
 
 protected :
     int id;                     // Positive if it's necessary to send this object through network, else negative
     int x, y, width, height;
+    sf::Vector2i speedVector;
 
+    sf::Clock clock;
     bool gravityAffected;
     GameObject::Type type;
 };

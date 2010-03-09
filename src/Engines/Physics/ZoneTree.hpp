@@ -39,10 +39,10 @@ public :
     ZoneTree(ZoneTree *root, ZoneTree *father, int x, int y, int width, int height, std::map<GameObject*, ZoneTree*>& gameObjectsToNode);
     ~ZoneTree();
 
-    void AddGO(GameObject*);
-    void DeleteGO(GameObject*);
+    void addGO(GameObject*);
+    void deleteGO(GameObject*);
 
-    Collision DetectCollisions(GameObject* go);
+    Collision detectCollisions(GameObject* go);
 
     bool isEmpty() { return gameObjects.empty() && (!childNodes || (childNodes[0]->isEmpty() && childNodes[1]->isEmpty() && childNodes[2]->isEmpty() && childNodes[3]->isEmpty())); }
 
