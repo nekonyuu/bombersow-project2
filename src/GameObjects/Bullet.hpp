@@ -21,42 +21,26 @@
 
 */
 
+#ifndef BULLET_H
+#define BULLET_H
+
 #include "GameObjects/GameObject.hpp"
 
-GameObject::GameObject() :
-    id(0), x(0), y(0), width(0), height(0), gravityAffected(true)
+class Bullet : public GameObject
 {
-}
+public :
+    enum Type { Crowbar, RocketLauncher, Grenades, ShotGun, MachineGun, Sniper, LaserGun };
+    Bullet(Bullet::Type);
+    virtual ~Bullet();
+private :
+    unsigned int ownedID;
+    Bullet::Type bulletType;
 
-GameObject::GameObject(int id, int x, int y, int width, int height, bool gravityAffected) : speedVector(0, 0)
-{
-    this->id = id;
-    this->x = x;
-    this->y = y;
-    this->width = width;
-    this->height = height;
-    this->gravityAffected = gravityAffected;
-    this->type = Generic;
-}
+    unsigned int infligedDamages;
+    unsigned int trajectoryType;
+    unsigned int range;
 
-GameObject::GameObject(int id, int x, int y, int width, int height, bool gravityAffected, GameObject::Type type) : speedVector(0, 0)
-{
-    this->id = id;
-    this->x = x;
-    this->y = y;
-    this->width = width;
-    this->height = height;
-    this->gravityAffected = gravityAffected;
-    this->type = type;
-}
+    float acceleration;
+};
 
-GameObject::~GameObject()
-{
-}
-
-float GameObject::getClockTick()
-{
-    float time = clock.GetElapsedTime();
-    clock.Reset();
-    return time;
-}
+#endif // BULLEt_H
