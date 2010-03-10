@@ -23,9 +23,28 @@
 
 #include "GameObjects/Player.hpp"
 
-Player::Player(int id, int x, int y, int width, int height, bool gravityAffected) : GameObject(id, x, y, width, height, gravityAffected)
+Player::Player(int id, int x, int y, int width, int height, bool gravityAffected, std::string n, Weapon::Type t) : GameObject(id, x, y, width, height, gravityAffected, GameObject::Player), name(n)
 {
+    this->currentWeapon = t;
 
+    Weapon::Type typeList[] = { Weapon::Crowbar, Weapon::RocketLauncher, Weapon::Grenades, Weapon::ShotGun, Weapon::MachineGun, Weapon::Sniper, Weapon::LaserGun };
+
+    for(int i = 0; i < 7; i++)
+        weaponsList[typeList[i]] = Weapon(typeList[i]);
+
+    setCurrentWeapon(this->currentWeapon);
+}
+
+Player::Player(int id, int x, int y, int width, int height, bool gravityAffected, std::string n) : GameObject(id, x, y, width, height, gravityAffected, GameObject::Player), name(n)
+{
+    this->currentWeapon = Weapon::Crowbar;
+
+    Weapon::Type typeList[] = { Weapon::Crowbar, Weapon::RocketLauncher, Weapon::Grenades, Weapon::ShotGun, Weapon::MachineGun, Weapon::Sniper, Weapon::LaserGun };
+
+    for(int i = 0; i < 7; i++)
+        weaponsList[typeList[i]] = Weapon(typeList[i]);
+
+    setCurrentWeapon(this->currentWeapon);
 }
 
 Player::~Player()

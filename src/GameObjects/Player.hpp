@@ -24,22 +24,28 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <iostream>
+#include <string>
+#include <map>
 
 #include <SFML/Network.hpp>
 
-#include "GameObjects/GameObject.hpp"
+#include "GameObjects/Weapon.hpp"
 
 class Player : public GameObject
 {
 public :
     enum JumpType { NoJump, Simple, Double };
-    Player(int, int, int, int, int, bool);
+    Player(int, int, int, int, int, bool, std::string, Weapon::Type);
+    Player(int, int, int, int, int, bool, std::string);
     virtual ~Player();
 
+    int getLife() { return this->life; }
     bool isDead() { return dead; }
-    void setJumpState(Player::JumpType jt) { jumpState = jt; }
-    Player::JumpType getJumpState() { return jumpState; }
+    void setJumpState(Player::JumpType jt) { this->jumpState = jt; }
+    Player::JumpType getJumpState() { return this->jumpState; }
+
+    void setCurrentWeapon(Weapon::Type t) { this->currentWeapon = t; }
+    Weapon::Type getCurrentWeapon() { return this->currentWeapon; }
 
 protected :
     sf::String name;
@@ -50,6 +56,8 @@ protected :
     bool dead;
     Player::JumpType jumpState;
 
+    std::map<Weapon::Type, Weapon> weaponsList;
+    Weapon::Type currentWeapon;
     sf::Clock weaponTimerReload;
 
     bool jetpack;

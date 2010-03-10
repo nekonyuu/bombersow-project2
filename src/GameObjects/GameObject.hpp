@@ -61,7 +61,7 @@ protected :
     int x, y, width, height;
     sf::Vector2i speedVector;
 
-    sf::Clock clock;
+    sf::Clock clock;            // Passed time since last physics update
     bool gravityAffected;
     GameObject::Type type;
 };
