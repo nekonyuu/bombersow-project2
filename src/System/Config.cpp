@@ -26,8 +26,8 @@
 
 Config::Config()
 {
-    this->screenWidth = 800;
-    this->screenHeight = 640;
+    this->screenWidth = 2000;
+    this->screenHeight = 2000;
     this->screenVsync = false;
     this->screenFpsLimit = 100;
     this->playerPseudo = "Player";
