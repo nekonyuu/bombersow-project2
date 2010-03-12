@@ -13,9 +13,11 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-pg" />
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg" />
 					<Add option="-lsfml-graphics" />
 					<Add option="-lsfml-window" />
 					<Add option="-lsfml-network" />
@@ -29,7 +31,12 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-fexpensive-optimizations" />
+					<Add option="-O3" />
 					<Add option="-O2" />
+					<Add option="-O1" />
+					<Add option="-O" />
+					<Add option="-march=native" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
