@@ -111,8 +111,6 @@ void ZoneTree::deleteGO(GameObject* go)
                         break;
                     }
 
-
-                //gameObjectsToNode.erase(go);
                 break;
             }
             else
