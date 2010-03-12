@@ -30,6 +30,7 @@ ZoneTree::ZoneTree(ZoneTree *root, ZoneTree *father, int left, int top, int righ
     this->root = root;
     this->father = father;
     this->childNodes = NULL;
+    this->collisionBuffer = NULL;
 }
 
 ZoneTree::~ZoneTree()
@@ -41,25 +42,28 @@ ZoneTree::~ZoneTree()
 
         delete childNodes;
     }
+
+    if(collisionBuffer)
+        delete collisionBuffer;
 }
 
 void ZoneTree::addGO(GameObject* go)
 {
     // We start to work only if the object is in the zone of the node, and if go isn't NULL
-    if (go && groundZone.Intersects(go->getRect()))
+    if (go && groundZone.intersectWith(go->getRect()))
     {
         // If we have already one object in the node, and if the zone isn't smaller than 200 pixels , we subdivide the node
-        if (gameObjects.size() > 0 && groundZone.GetWidth() >= 200)
+        if (gameObjects.size() > 0 && groundZone.getWidth() >= 200)
         {
             if (!childNodes)
             {
                 // Subdivide the node
                 childNodes = new ZoneTree*[4];
 
-                childNodes[ZoneTree::NW] = new ZoneTree(root, this, groundZone.Left, groundZone.Top, (groundZone.Right + groundZone.Left) / 2, (groundZone.Bottom + groundZone.Top) / 2, gameObjectsToNode);
-                childNodes[ZoneTree::NE] = new ZoneTree(root, this, (groundZone.Right + groundZone.Left) / 2 + 1, groundZone.Top, groundZone.Right, (groundZone.Bottom + groundZone.Top) / 2, gameObjectsToNode);
-                childNodes[ZoneTree::SW] = new ZoneTree(root, this, groundZone.Left, (groundZone.Bottom + groundZone.Top) / 2 + 1, (groundZone.Right + groundZone.Left) / 2, groundZone.Bottom, gameObjectsToNode);
-                childNodes[ZoneTree::SE] = new ZoneTree(root, this, (groundZone.Right + groundZone.Left) / 2 + 1, (groundZone.Bottom + groundZone.Top) / 2 + 1, groundZone.Right, groundZone.Bottom, gameObjectsToNode);
+                childNodes[ZoneTree::NW] = new ZoneTree(root, this, groundZone.left, groundZone.top, (groundZone.right + groundZone.left) / 2, (groundZone.bottom + groundZone.top) / 2, gameObjectsToNode);
+                childNodes[ZoneTree::NE] = new ZoneTree(root, this, (groundZone.right + groundZone.left) / 2 + 1, groundZone.top, groundZone.right, (groundZone.bottom + groundZone.top) / 2, gameObjectsToNode);
+                childNodes[ZoneTree::SW] = new ZoneTree(root, this, groundZone.left, (groundZone.bottom + groundZone.top) / 2 + 1, (groundZone.right + groundZone.left) / 2, groundZone.bottom, gameObjectsToNode);
+                childNodes[ZoneTree::SE] = new ZoneTree(root, this, (groundZone.right + groundZone.left) / 2 + 1, (groundZone.bottom + groundZone.top) / 2 + 1, groundZone.right, groundZone.bottom, gameObjectsToNode);
             }
 
             /*
@@ -118,18 +122,24 @@ void ZoneTree::deleteGO(GameObject* go)
     }
 }
 
-Collision ZoneTree::detectCollisions(GameObject* go)
+Collision* ZoneTree::detectCollisions(GameObject* go)
 {
+    if(collisionBuffer != NULL)
+    {
+        delete collisionBuffer;
+        collisionBuffer = NULL;
+    }
+
     if(go)
     {
-        sf::Rect<int> goRect = go->getRect();
+        FastRect<int> goRect = go->getRect();
 
         for(unsigned int i = 0; i < gameObjects.size(); i++)
             if(go != gameObjects[i])
-                if(goRect.Intersects(gameObjects[i]->getRect()))
-                    return Collision(gameObjects[i]->getType(), gameObjects[i]);
+                if(goRect.intersectWith(gameObjects[i]->getRect()))
+                    return (collisionBuffer = new Collision(gameObjects[i]->getType(), gameObjects[i]));
     }
 
-    return Collision();
+    return NULL;
 }
 

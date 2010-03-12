@@ -40,7 +40,7 @@ public :
     void updateGO(GameObject*);
     void deleteGO(GameObject*);
 
-    Collision detectCollisions(GameObject*);
+    Collision* detectCollisions(GameObject*);
 
     // DEBUG
     void ListGO();
@@ -52,6 +52,8 @@ private :
     ZoneTree* zonesTree;
 
     Config& config;
+    int zoneHeight, zoneWidth;
+    float physicsGravityCoef, physicsGravitySpeed;
 };
 
 #endif // PHYSICSENGINE_H

@@ -26,6 +26,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Others/FastRect.hpp"
+
 class GameObject
 {
 public :
@@ -37,10 +39,10 @@ public :
     ~GameObject();
 
     int getID() { return this->id; }
-    void setX(int x) { this->x = x; this->goZone.Left = x; this->goZone.Right = x + width; }
-    void setRelativeX(int x) { this->x += x; this->goZone.Left = this->x; this->goZone.Right = this->x + width; }
-    void setY(int y) { this->y = y; this->goZone.Top = y; this->goZone.Bottom = y + height; }
-    void setRelativeY(int y) { this->y += y; this->goZone.Top = this->y; this->goZone.Bottom = this->y + height; }
+    void setX(int x) { this->x = x; this->goZone.left = x; this->goZone.right = x + width; }
+    void setRelativeX(int x) { this->x += x; this->goZone.left = this->x; this->goZone.right = this->x + width; }
+    void setY(int y) { this->y = y; this->goZone.top = y; this->goZone.bottom = y + height; }
+    void setRelativeY(int y) { this->y += y; this->goZone.top = this->y; this->goZone.bottom = this->y + height; }
     void setPosition(int x, int y) { this->setX(x); this->setY(y); }
     void setRelativePosition(int x, int y) { this->setRelativeX(x); this->setRelativeY(y); }
     int getX() { return this->x; }
@@ -49,9 +51,9 @@ public :
     int getHeight() { return this->height; }
     bool isGravityAffected() { return this->gravityAffected; }
     void setGravityInfluence(bool b) { this->gravityAffected = b; }
-    GameObject::Type getType() { return this->type; }
-    sf::Rect<int> getRect() { return goZone; }
-    sf::Vector2i getSpeedVector() { return speedVector; }
+    const GameObject::Type& getType() { return this->type; }
+    const FastRect<int>& getRect() { return goZone; }
+    const sf::Vector2i& getSpeedVector() { return speedVector; }
     void setSpeedX(int x) { this->speedVector.x = x; }
     void setSpeedY(int y) { this->speedVector.y = y; }
     void setSpeedVector(int sx, int sy) { this->setSpeedX(sx); this->setSpeedY(sy); }
@@ -60,7 +62,7 @@ public :
 protected :
     int id;                     // Positive if it's necessary to send this object through network, else negative
     int x, y, width, height;
-    sf::Rect<int> goZone;
+    FastRect<int> goZone;
     sf::Vector2i speedVector;
 
     sf::Clock clock;            // Passed time since last physics update

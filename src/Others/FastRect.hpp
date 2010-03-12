@@ -21,43 +21,50 @@
 
 */
 
-#ifndef ZONETREE_H
-#define ZONETREE_H
+#ifndef FRECT_H
+#define FRECT_H
 
-#include <map>
-
-#include <SFML/Graphics.hpp>
-
-#include "Engines/Physics/Collision.hpp"
-#include "GameObjects/GameObject.hpp"
-
-class ZoneTree
+template<typename T>
+class FastRect
 {
 public :
-    enum GroundSection { NW, NE, SW, SE };
+    FastRect(T, T, T, T);
 
-    ZoneTree(ZoneTree *root, ZoneTree *father, int left, int top, int right, int bottom, std::multimap<GameObject*, ZoneTree*>& gameObjectsToNode);
-    ~ZoneTree();
+    bool intersectWith(FastRect<T>);
+    T getWidth();
+    T getHeight();
 
-    void addGO(GameObject*);
-    void deleteGO(GameObject*);
-
-    Collision* detectCollisions(GameObject* go);
-
-    bool isEmpty() { return gameObjects.empty() && (!childNodes || (childNodes[0]->isEmpty() && childNodes[1]->isEmpty() && childNodes[2]->isEmpty() && childNodes[3]->isEmpty())); }
-
-private :
-    std::vector<GameObject*> gameObjects;        // Empty if this node isn't final
-
-    FastRect<int> groundZone;
-
-    ZoneTree *root;
-    ZoneTree *father;
-    ZoneTree **childNodes;
-
-    std::multimap<GameObject*, ZoneTree*>& gameObjectsToNode;
-
-    Collision *collisionBuffer;
+    T left, top, right, bottom;
 };
 
-#endif // ZONETREE_H
+template<typename T>
+FastRect<T>::FastRect(T left, T top, T right, T bottom)
+{
+    this->left = left;
+    this->top = top;
+    this->right = right;
+    this->bottom = bottom;
+}
+
+template<typename T>
+bool FastRect<T>::intersectWith(FastRect<T> rect)
+{
+    if(rect.left > this->right || rect.right < this->left || rect.top < this->bottom || rect.bottom > this->top)
+        return false;
+    else
+        return true;
+}
+
+template<typename T>
+T FastRect<T>::getWidth()
+{
+    return right - left;
+}
+
+template<typename T>
+T FastRect<T>::getHeight()
+{
+    return top - bottom;
+}
+
+#endif // FRECT_H

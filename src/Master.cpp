@@ -12,7 +12,7 @@ int main()
     std::vector<Particle*> particlesVector;
     PhysicsEngine physicsEngine(cfg.getScreenWidth(), cfg.getScreenHeight(), cfg);
 
-    for(int i = 0; i < 30000; i++)
+    for(int i = 0; i < 500000; i++)
     {
         Particle *p = new Particle(sf::Randomizer::Random(0, cfg.getScreenWidth()), sf::Randomizer::Random(0, cfg.getScreenHeight()), 1, 1, 255, 0, 0);
         particlesVector.push_back(p);
@@ -25,9 +25,9 @@ int main()
     int it = 0, nbParticles = 0;
 
 //*
-    while(it < 2)
+    while(it < 100)
     {
-        for(int i = 0; i < 30000; i++, nbParticles++)
+        for(int i = 0; i < 500000; i++, nbParticles++)
         {
             physicsEngine.updateGO(particlesVector[i]);
 
