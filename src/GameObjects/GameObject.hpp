@@ -45,10 +45,10 @@ public :
     void setRelativeY(int y) { this->y += y; this->goZone.top = this->y; this->goZone.bottom = this->y + height; }
     void setPosition(int x, int y) { this->setX(x); this->setY(y); }
     void setRelativePosition(int x, int y) { this->setRelativeX(x); this->setRelativeY(y); }
-    int getX() { return this->x; }
-    int getY() { return this->y; }
-    int getWidth() { return this->width; }
-    int getHeight() { return this->height; }
+    const int& getX() { return this->x; }
+    const int& getY() { return this->y; }
+    const int& getWidth() { return this->width; }
+    const int& getHeight() { return this->height; }
     bool isGravityAffected() { return this->gravityAffected; }
     void setGravityInfluence(bool b) { this->gravityAffected = b; }
     const GameObject::Type& getType() { return this->type; }

@@ -19,6 +19,9 @@ int main()
         physicsEngine.addGO(p);
     }
 
+    for(int i = 0; i < 20; i++)
+        std::cout << "Coordonnées : x = " << particlesVector[i]->getX() << ", y = " << particlesVector[i]->getY() << std::endl;
+
     //physicsEngine.ListGO();
 
     sf::Clock timer;
@@ -42,6 +45,9 @@ int main()
         it++;
     }
 //*/
+
+    for(int i = 0; i < 20; i++)
+        std::cout << "Coordonnées : x = " << particlesVector[i]->getX() << ", y = " << particlesVector[i]->getY() << std::endl;
 
     for(int i = 0; i < 20; i++)
     {
