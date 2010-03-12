@@ -24,7 +24,7 @@
 #ifndef ZONETREE_H
 #define ZONETREE_H
 
-#include <list>
+#include <map>
 
 #include <SFML/Graphics.hpp>
 
@@ -36,7 +36,7 @@ class ZoneTree
 public :
     enum GroundSection { NW, NE, SW, SE };
 
-    ZoneTree(ZoneTree *root, ZoneTree *father, int x, int y, int width, int height, std::map<GameObject*, ZoneTree*>& gameObjectsToNode);
+    ZoneTree(ZoneTree *root, ZoneTree *father, int left, int top, int right, int bottom, std::multimap<GameObject*, ZoneTree*>& gameObjectsToNode);
     ~ZoneTree();
 
     void addGO(GameObject*);
@@ -49,14 +49,13 @@ public :
 private :
     std::vector<GameObject*> gameObjects;        // Empty if this node isn't final
 
-    int x, y, width, height;
     sf::Rect<int> groundZone;
 
     ZoneTree *root;
     ZoneTree *father;
     ZoneTree **childNodes;
 
-    std::map<GameObject*, ZoneTree*>& gameObjectsToNode;
+    std::multimap<GameObject*, ZoneTree*>& gameObjectsToNode;
 };
 
 #endif // ZONETREE_H

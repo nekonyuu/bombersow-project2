@@ -23,27 +23,43 @@
 
 #include <math.h>
 
+// DEBUG
+#include <iostream>
+
 #include "Engines/Physics/PhysicsEngine.hpp"
 #include "GameObjects/Player.hpp"
 #include "GameObjects/Bullet.hpp"
 #include "GameObjects/Particle.hpp"
 
-PhysicsEngine::PhysicsEngine(int width, int height, Config& cfg) : gameObjectsToNode(), zonesTree(NULL, NULL, 0, 0, width, height, gameObjectsToNode), config(cfg)
+PhysicsEngine::PhysicsEngine(int width, int height, Config& cfg) : gameObjectsToNode(), config(cfg)
 {
-
+    this->zonesTree = new ZoneTree(NULL, NULL, 0, 0, width, height, gameObjectsToNode);
 }
 
-void PhysicsEngine::AddGO(GameObject* go)
+PhysicsEngine::~PhysicsEngine()
 {
-    zonesTree.addGO(go);
+    delete zonesTree;
 }
 
-void PhysicsEngine::DeleteGO(GameObject* go)
+void PhysicsEngine::addGO(GameObject* go)
 {
-    gameObjectsToNode[go]->deleteGO(go);
+    zonesTree->addGO(go);
 }
 
-void PhysicsEngine::UpdateGO(GameObject* go)
+void PhysicsEngine::deleteGO(GameObject* go)
+{
+    std::pair<std::multimap<GameObject*, ZoneTree*>::iterator, std::multimap<GameObject*, ZoneTree*>::iterator> goList;
+    std::multimap<GameObject*, ZoneTree*>::iterator itr;
+
+    goList = this->gameObjectsToNode.equal_range(go);
+
+    for(itr = goList.first; itr != goList.second; ++itr)
+        itr->second->deleteGO(go);
+
+    //gameObjectsToNode[go]->deleteGO(go);
+}
+
+void PhysicsEngine::updateGO(GameObject* go)
 {
     // Apply Gravity on a Player
     if(go->getType() == GameObject::Playable)
@@ -59,15 +75,15 @@ void PhysicsEngine::UpdateGO(GameObject* go)
             {
                 plr->setRelativeY(relativeY);
 
-                gameObjectsToNode[go]->deleteGO(go);
-                zonesTree.addGO(go);
+                this->deleteGO(go);
+                zonesTree->addGO(go);
 
-                Collision col = gameObjectsToNode[go]->detectCollisions(go);
+                Collision col = this->detectCollisions(go);
                 if(col.getPtr() != NULL)
                 {
                     plr->setRelativeY(-relativeY);
-                    gameObjectsToNode[go]->deleteGO(go);
-                    zonesTree.addGO(go);
+                    this->deleteGO(go);
+                    zonesTree->addGO(go);
                     plr->setJumpState(Player::NoJump);
                 }
                 plr->setSpeedY(speedY);
@@ -75,8 +91,8 @@ void PhysicsEngine::UpdateGO(GameObject* go)
             else if(plr->getHeight() + plr->getY() + relativeY > config.getScreenHeight())
             {
                 plr->setY(config.getScreenHeight() - plr->getHeight());
-                gameObjectsToNode[go]->deleteGO(go);
-                zonesTree.addGO(go);
+                this->deleteGO(go);
+                zonesTree->addGO(go);
                 plr->setSpeedY(0);
                 plr->setJumpState(Player::NoJump);
             }
@@ -100,18 +116,18 @@ void PhysicsEngine::UpdateGO(GameObject* go)
             bul->setRelativePosition(x, y);
             bul->setRange((bul->getRange() < length) ? 0 : bul->getRange() - length);
 
-            gameObjectsToNode[go]->deleteGO(go);
-            zonesTree.addGO(go);
+            this->deleteGO(go);
+            zonesTree->addGO(go);
 
-            Collision col = gameObjectsToNode[go]->detectCollisions(go);
+            Collision col = this->detectCollisions(go);
             if(col.getPtr() != NULL)
             {
                 // TODO : Dommages sur player
-                gameObjectsToNode[go]->deleteGO(go);
+                this->deleteGO(go);
             }
         }
         else
-            gameObjectsToNode[go]->deleteGO(go);
+            this->deleteGO(go);
     }
     // Apply Gravity on a Particle
     else if(go->getType() == GameObject::ParticleSystem)
@@ -121,7 +137,7 @@ void PhysicsEngine::UpdateGO(GameObject* go)
         float speedY = part->getSpeedVector().y + config.getPhysicsGravitySpeed() * config.getPhysicsGravityCoef() * particleClockTick;
         float x = part->getSpeedVector().x * particleClockTick, y = speedY * particleClockTick;
 
-        Collision col = gameObjectsToNode[go]->detectCollisions(go);
+        Collision col = this->detectCollisions(go);
         if(col.getPtr() != NULL)
             part->setSpeedVector(0, 0);
         else if(part->getY() + part->getHeight() + y <= config.getScreenHeight() && part->getY() + y > 0)
@@ -132,8 +148,32 @@ void PhysicsEngine::UpdateGO(GameObject* go)
     }
     else
     {
-        gameObjectsToNode[go]->deleteGO(go);
-        zonesTree.addGO(go);
+        this->deleteGO(go);
+        zonesTree->addGO(go);
     }
 }
 
+Collision PhysicsEngine::detectCollisions(GameObject* go)
+{
+    std::pair<std::multimap<GameObject*, ZoneTree*>::iterator, std::multimap<GameObject*, ZoneTree*>::iterator> goList;
+    std::multimap<GameObject*, ZoneTree*>::iterator itr;
+    goList = this->gameObjectsToNode.equal_range(go);
+
+    for(itr = goList.first; itr != goList.second; ++itr)
+    {
+        Collision col = itr->second->detectCollisions(go);
+        if(col.getPtr() != NULL)
+            return col;
+    }
+
+    return Collision();
+}
+
+// DEBUG
+void PhysicsEngine::ListGO()
+{
+    std::cout << "Hash List : " << std::endl;
+    std::map<GameObject*, ZoneTree*>::iterator it = gameObjectsToNode.begin();
+    for(; it != gameObjectsToNode.end(); ++it)
+        std::cout << "Key : " << it->first << ", Node : " << it->second << std::endl;
+}

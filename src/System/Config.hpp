@@ -25,6 +25,8 @@
 
 #define GAME_NAME "BomberSow 0.1"
 
+#include <string>
+
 // Index des binds dans le tableau de config
 enum BINDINGS
 {
@@ -48,7 +50,7 @@ class Config
 public:
     Config();
     Config(int width, int height, bool vsync, int fps_limit, bool showfps, std::string pseudo, int move_speed, int jump_speed, int fly_speed, float grav_speed, float grav_coef);
-    virtual ~Config();
+    ~Config();
 
     int getScreenWidth()
     {

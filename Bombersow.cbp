@@ -58,6 +58,8 @@
 		<Unit filename="src/GameObjects/Bullet.hpp" />
 		<Unit filename="src/GameObjects/GameObject.cpp" />
 		<Unit filename="src/GameObjects/GameObject.hpp" />
+		<Unit filename="src/GameObjects/Particle.cpp" />
+		<Unit filename="src/GameObjects/Particle.hpp" />
 		<Unit filename="src/GameObjects/Player.cpp" />
 		<Unit filename="src/GameObjects/Player.hpp" />
 		<Unit filename="src/GameObjects/Weapon.cpp" />

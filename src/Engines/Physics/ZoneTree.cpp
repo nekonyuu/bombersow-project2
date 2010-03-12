@@ -23,23 +23,24 @@
 
 #include "Engines/Physics/ZoneTree.hpp"
 
-ZoneTree::ZoneTree(ZoneTree *root, ZoneTree *father, int x, int y, int width, int height, std::map<GameObject*, ZoneTree*>& go2n) : gameObjectsToNode(go2n)
+#include <iostream>
+
+ZoneTree::ZoneTree(ZoneTree *root, ZoneTree *father, int left, int top, int right, int bottom, std::multimap<GameObject*, ZoneTree*>& go2n) : groundZone(left, top, right, bottom), gameObjectsToNode(go2n)
 {
     this->root = root;
     this->father = father;
-    this->x = x;
-    this->y = y;
-    this->width = width;
-    this->height = height;
     this->childNodes = NULL;
 }
 
 ZoneTree::~ZoneTree()
 {
-    for (int i = 0; i < 4; i++)
-        delete childNodes[i];
+    if(childNodes)
+    {
+        for (int i = 0; i < 4; i++)
+            delete childNodes[i];
 
-    delete childNodes;
+        delete childNodes;
+    }
 }
 
 void ZoneTree::addGO(GameObject* go)
@@ -48,17 +49,17 @@ void ZoneTree::addGO(GameObject* go)
     if (go && groundZone.Intersects(go->getRect()))
     {
         // If we have already one object in the node, and if the zone isn't smaller than 200 pixels , we subdivide the node
-        if (gameObjects.size() > 0 && width >= 200)
+        if (gameObjects.size() > 0 && groundZone.GetWidth() >= 200)
         {
             if (!childNodes)
             {
                 // Subdivide the node
                 childNodes = new ZoneTree*[4];
 
-                childNodes[ZoneTree::NW] = new ZoneTree(root, this, x, y, x + width / 2, x + height / 2, gameObjectsToNode);
-                childNodes[ZoneTree::NE] = new ZoneTree(root, this, x + width / 2 + 1, y, x + width, y + height / 2, gameObjectsToNode);
-                childNodes[ZoneTree::SW] = new ZoneTree(root, this, x, y + height / 2 + 1, x + width / 2, y + height, gameObjectsToNode);
-                childNodes[ZoneTree::SE] = new ZoneTree(root, this, x + width / 2 + 1, y + height / 2 + 1, x + width, y + height, gameObjectsToNode);
+                childNodes[ZoneTree::NW] = new ZoneTree(root, this, groundZone.Left, groundZone.Top, (groundZone.Right + groundZone.Left) / 2, (groundZone.Bottom + groundZone.Top) / 2, gameObjectsToNode);
+                childNodes[ZoneTree::NE] = new ZoneTree(root, this, (groundZone.Right + groundZone.Left) / 2 + 1, groundZone.Top, groundZone.Right, (groundZone.Bottom + groundZone.Top) / 2, gameObjectsToNode);
+                childNodes[ZoneTree::SW] = new ZoneTree(root, this, groundZone.Left, (groundZone.Bottom + groundZone.Top) / 2 + 1, (groundZone.Right + groundZone.Left) / 2, groundZone.Bottom, gameObjectsToNode);
+                childNodes[ZoneTree::SE] = new ZoneTree(root, this, (groundZone.Right + groundZone.Left) / 2 + 1, (groundZone.Bottom + groundZone.Top) / 2 + 1, groundZone.Right, groundZone.Bottom, gameObjectsToNode);
             }
 
             /*
@@ -67,28 +68,24 @@ void ZoneTree::addGO(GameObject* go)
                 there's leafs
             */
             for (unsigned int i = 0; i < gameObjects.size(); i++)
-            {
                 /*
                     Even if the object is on more than one node, we add to all the nodes which
                     contains the object, it avoids another iteration on the parent node
                 */
-                for (int j = 0; j < 4; j++)
-                {
+                for (unsigned int j = 0; j < 4; j++)
                     childNodes[j]->addGO(gameObjects[i]);
-                    // We add the new object too at the same time
-                    childNodes[j]->addGO(go);
-                }
-            }
+
+            for(unsigned int i = 0; i < 4; i++)
+                childNodes[i]->addGO(go);
 
             gameObjects.clear();
         }
         else
         {
             gameObjects.push_back(go);
-            gameObjectsToNode[go] = this;
+            gameObjectsToNode.insert(std::pair<GameObject*, ZoneTree*>(go, this));
         }
     }
-
 }
 
 void ZoneTree::deleteGO(GameObject* go)
@@ -101,7 +98,21 @@ void ZoneTree::deleteGO(GameObject* go)
             if(*it == go)
             {
                 gameObjects.erase(it);
-                gameObjectsToNode.erase(go);
+
+                std::pair<std::multimap<GameObject*, ZoneTree*>::iterator, std::multimap<GameObject*, ZoneTree*>::iterator> goList;
+                std::multimap<GameObject*, ZoneTree*>::iterator itr;
+
+                goList = gameObjectsToNode.equal_range(go);
+
+                for(itr = goList.first; itr != goList.second; ++itr)
+                    if(itr->second == this)
+                    {
+                        gameObjectsToNode.erase(itr);
+                        break;
+                    }
+
+
+                //gameObjectsToNode.erase(go);
                 break;
             }
             else
