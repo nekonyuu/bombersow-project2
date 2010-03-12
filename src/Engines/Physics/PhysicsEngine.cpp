@@ -34,6 +34,10 @@
 PhysicsEngine::PhysicsEngine(int width, int height, Config& cfg) : gameObjectsToNode(), config(cfg)
 {
     this->zonesTree = new ZoneTree(NULL, NULL, 0, 0, width, height, gameObjectsToNode);
+    this->physicsGravityCoef = config.getPhysicsGravityCoef();
+    this->physicsGravitySpeed = config.getPhysicsGravitySpeed();
+    this->zoneHeight = config.getScreenHeight();
+    this->zoneWidth = config.getScreenWidth();
 }
 
 PhysicsEngine::~PhysicsEngine()
@@ -55,8 +59,6 @@ void PhysicsEngine::deleteGO(GameObject* go)
 
     for(itr = goList.first; itr != goList.second; ++itr)
         itr->second->deleteGO(go);
-
-    //gameObjectsToNode[go]->deleteGO(go);
 }
 
 void PhysicsEngine::updateGO(GameObject* go)
@@ -69,17 +71,17 @@ void PhysicsEngine::updateGO(GameObject* go)
         if(!plr->isDead())
         {
             float playerClockTick = plr->getClockTick();
-            int speedY = plr->getSpeedVector().y + config.getPhysicsGravitySpeed() * playerClockTick * config.getPhysicsGravityCoef(), relativeY = speedY * playerClockTick;
+            int speedY = plr->getSpeedVector().y + physicsGravitySpeed * playerClockTick * physicsGravityCoef, relativeY = speedY * playerClockTick, plrY = plr->getY();
 
-            if(plr->getHeight() + plr->getY() + relativeY <= config.getScreenHeight() && plr->getY() + relativeY > 0)
+            if(plr->getHeight() + plrY + relativeY <= zoneHeight && plrY + relativeY > 0)
             {
                 plr->setRelativeY(relativeY);
 
                 this->deleteGO(go);
                 zonesTree->addGO(go);
 
-                Collision col = this->detectCollisions(go);
-                if(col.getPtr() != NULL)
+                Collision *col = this->detectCollisions(go);
+                if(col != NULL)
                 {
                     plr->setRelativeY(-relativeY);
                     this->deleteGO(go);
@@ -88,9 +90,9 @@ void PhysicsEngine::updateGO(GameObject* go)
                 }
                 plr->setSpeedY(speedY);
             }
-            else if(plr->getHeight() + plr->getY() + relativeY > config.getScreenHeight())
+            else if(plr->getHeight() + plrY + relativeY > zoneHeight)
             {
-                plr->setY(config.getScreenHeight() - plr->getHeight());
+                plr->setY(zoneHeight - plr->getHeight());
                 this->deleteGO(go);
                 zonesTree->addGO(go);
                 plr->setSpeedY(0);
@@ -106,21 +108,23 @@ void PhysicsEngine::updateGO(GameObject* go)
         Bullet *bul = (Bullet*) go;
 
         float bulletClockTick = bul->getClockTick();
-        float x = bul->getSpeedVector().x * bulletClockTick, y = bul->getSpeedVector().y * bulletClockTick;
-        unsigned int length = sqrt(x * x + y * y);
+        sf::Vector2i speedVector = bul->getSpeedVector();
+        float x = speedVector.x * bulletClockTick, y = speedVector.y * bulletClockTick;
+        unsigned int length = sqrt(x * x + y * y), bulRange = bul->getRange();
+        int bulX = bul->getX(), bulY = bul->getY();
 
-        if( bul->getX() + x > 0 && bul->getX() + x < config.getScreenWidth()
-        &&  bul->getY() + y > 0 && bul->getY() + y < config.getScreenHeight()
+        if( bulX + x > 0 && bulX + x < zoneWidth
+        &&  bulY + y > 0 && bulY + y < zoneHeight
         &&  bul->getRange())
         {
             bul->setRelativePosition(x, y);
-            bul->setRange((bul->getRange() < length) ? 0 : bul->getRange() - length);
+            bul->setRange((bulRange < length) ? 0 : bulRange - length);
 
             this->deleteGO(go);
             zonesTree->addGO(go);
 
-            Collision col = this->detectCollisions(go);
-            if(col.getPtr() != NULL)
+            Collision *col = this->detectCollisions(go);
+            if(col != NULL)
             {
                 // TODO : Dommages sur player
                 this->deleteGO(go);
@@ -134,13 +138,15 @@ void PhysicsEngine::updateGO(GameObject* go)
     {
         Particle *part = (Particle*) go;
         float particleClockTick = part->getClockTick();
-        float speedY = part->getSpeedVector().y + config.getPhysicsGravitySpeed() * config.getPhysicsGravityCoef() * particleClockTick;
-        float x = part->getSpeedVector().x * particleClockTick, y = speedY * particleClockTick;
+        sf::Vector2i speedVector = part->getSpeedVector();
+        float speedY = speedVector.y + physicsGravityCoef * physicsGravitySpeed * particleClockTick;
+        float x = speedVector.x * particleClockTick, y = speedY * particleClockTick;
+        int goY = part->getY();
 
-        Collision col = this->detectCollisions(go);
-        if(col.getPtr() != NULL)
+        Collision *col = this->detectCollisions(go);
+        if(col != NULL)
             part->setSpeedVector(0, 0);
-        else if(part->getY() + part->getHeight() + y <= config.getScreenHeight() && part->getY() + y > 0)
+        else if(goY + part->getHeight() + y <= zoneHeight && goY + y > 0)
         {
             part->setRelativePosition(x, y);
             part->setSpeedY(speedY);
@@ -153,7 +159,7 @@ void PhysicsEngine::updateGO(GameObject* go)
     }
 }
 
-Collision PhysicsEngine::detectCollisions(GameObject* go)
+Collision* PhysicsEngine::detectCollisions(GameObject* go)
 {
     std::pair<std::multimap<GameObject*, ZoneTree*>::iterator, std::multimap<GameObject*, ZoneTree*>::iterator> goList;
     std::multimap<GameObject*, ZoneTree*>::iterator itr;
@@ -161,12 +167,12 @@ Collision PhysicsEngine::detectCollisions(GameObject* go)
 
     for(itr = goList.first; itr != goList.second; ++itr)
     {
-        Collision col = itr->second->detectCollisions(go);
-        if(col.getPtr() != NULL)
+        Collision *col = itr->second->detectCollisions(go);
+        if(col != NULL)
             return col;
     }
 
-    return Collision();
+    return NULL;
 }
 
 // DEBUG

@@ -72,6 +72,7 @@
 		<Unit filename="src/GameObjects/Weapon.cpp" />
 		<Unit filename="src/GameObjects/Weapon.hpp" />
 		<Unit filename="src/Master.cpp" />
+		<Unit filename="src/Others/FastRect.hpp" />
 		<Unit filename="src/System/Config.cpp" />
 		<Unit filename="src/System/Config.hpp" />
 		<Extensions>

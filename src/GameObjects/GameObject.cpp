@@ -24,7 +24,7 @@
 #include "GameObjects/GameObject.hpp"
 
 GameObject::GameObject() :
-    id(0), x(0), y(0), width(0), height(0), gravityAffected(true)
+    id(0), x(0), y(0), width(0), height(0), goZone(0, 0, 0, 0), speedVector(0, 0), gravityAffected(true)
 {
 }
 
