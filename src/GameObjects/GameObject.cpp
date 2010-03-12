@@ -28,7 +28,7 @@ GameObject::GameObject() :
 {
 }
 
-GameObject::GameObject(int id, int x, int y, int width, int height, bool gravityAffected) : speedVector(0, 0)
+GameObject::GameObject(int id, int x, int y, int width, int height, bool gravityAffected) : goZone(x, y, x + width, y + height), speedVector(0, 0)
 {
     this->id = id;
     this->x = x;
@@ -39,7 +39,7 @@ GameObject::GameObject(int id, int x, int y, int width, int height, bool gravity
     this->type = Generic;
 }
 
-GameObject::GameObject(int id, int x, int y, int width, int height, bool gravityAffected, GameObject::Type type) : speedVector(0, 0)
+GameObject::GameObject(int id, int x, int y, int width, int height, bool gravityAffected, GameObject::Type type) : goZone(x, y, x + width, y + height), speedVector(0, 0)
 {
     this->id = id;
     this->x = x;

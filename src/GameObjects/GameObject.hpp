@@ -37,10 +37,10 @@ public :
     ~GameObject();
 
     int getID() { return this->id; }
-    void setX(int x) { this->x = x; }
-    void setRelativeX(int x) { this->x += x; }
-    void setY(int y) { this->y = y; }
-    void setRelativeY(int y) { this->y += y; }
+    void setX(int x) { this->x = x; this->goZone.Left = x; this->goZone.Right = x + width; }
+    void setRelativeX(int x) { this->x += x; this->goZone.Left = this->x; this->goZone.Right = this->x + width; }
+    void setY(int y) { this->y = y; this->goZone.Top = y; this->goZone.Bottom = y + height; }
+    void setRelativeY(int y) { this->y += y; this->goZone.Top = this->y; this->goZone.Bottom = this->y + height; }
     void setPosition(int x, int y) { this->setX(x); this->setY(y); }
     void setRelativePosition(int x, int y) { this->setRelativeX(x); this->setRelativeY(y); }
     int getX() { return this->x; }
@@ -50,7 +50,7 @@ public :
     bool isGravityAffected() { return this->gravityAffected; }
     void setGravityInfluence(bool b) { this->gravityAffected = b; }
     GameObject::Type getType() { return this->type; }
-    sf::Rect<int> getRect() { return sf::Rect<int>(x, y, x + width, y + height); }
+    sf::Rect<int> getRect() { return goZone; }
     sf::Vector2i getSpeedVector() { return speedVector; }
     void setSpeedX(int x) { this->speedVector.x = x; }
     void setSpeedY(int y) { this->speedVector.y = y; }
@@ -60,6 +60,7 @@ public :
 protected :
     int id;                     // Positive if it's necessary to send this object through network, else negative
     int x, y, width, height;
+    sf::Rect<int> goZone;
     sf::Vector2i speedVector;
 
     sf::Clock clock;            // Passed time since last physics update
