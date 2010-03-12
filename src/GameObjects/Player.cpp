@@ -23,7 +23,7 @@
 
 #include "GameObjects/Player.hpp"
 
-Player::Player(int id, int x, int y, int width, int height, bool gravityAffected, std::string n, Weapon::Type t) : GameObject(id, x, y, width, height, gravityAffected, GameObject::Player), name(n)
+Player::Player(int id, int x, int y, int width, int height, bool gravityAffected, std::string n, Weapon::Type t) : GameObject(id, x, y, width, height, gravityAffected, GameObject::Playable), name(n)
 {
     this->currentWeapon = t;
 
@@ -35,7 +35,7 @@ Player::Player(int id, int x, int y, int width, int height, bool gravityAffected
     setCurrentWeapon(this->currentWeapon);
 }
 
-Player::Player(int id, int x, int y, int width, int height, bool gravityAffected, std::string n) : GameObject(id, x, y, width, height, gravityAffected, GameObject::Player), name(n)
+Player::Player(int id, int x, int y, int width, int height, bool gravityAffected, std::string n) : GameObject(id, x, y, width, height, gravityAffected, GameObject::Playable), name(n)
 {
     this->currentWeapon = Weapon::Crowbar;
 

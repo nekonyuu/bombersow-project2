@@ -31,6 +31,7 @@ ZoneTree::ZoneTree(ZoneTree *root, ZoneTree *father, int x, int y, int width, in
     this->y = y;
     this->width = width;
     this->height = height;
+    this->childNodes = NULL;
 }
 
 ZoneTree::~ZoneTree()

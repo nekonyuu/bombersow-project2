@@ -21,30 +21,22 @@
 
 */
 
-#ifndef BULLET_H
-#define BULLET_H
+#ifndef PARTICLE_H
+#define PARTICLE_H
+
+#include <SFML/Graphics.hpp>
 
 #include "GameObjects/GameObject.hpp"
 
-class Bullet : public GameObject
+class Particle : public GameObject
 {
 public :
-    enum Type { Crowbar, RocketLauncher, Grenades, ShotGun, MachineGun, Sniper, LaserGun };
-    Bullet(Bullet::Type);
-    virtual ~Bullet();
-
-    unsigned int getRange() { return this->range; }
-    void setRange(unsigned int v) { this->range = v; }
+    Particle(int, int, int, int, int, int, int);    // From RGB
+    Particle(int, int, int, int, sf::Color);        // From an sf::Color object
+    virtual ~Particle();
 
 private :
-    unsigned int ownedID;
-    Bullet::Type bulletType;
-
-    unsigned int infligedDamages;
-    unsigned int trajectoryType;
-    unsigned int range;
-
-    float acceleration;
+    sf::Color particleColor;
 };
 
-#endif // BULLEt_H
+#endif // PARTICLE_H

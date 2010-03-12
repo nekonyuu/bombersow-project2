@@ -21,30 +21,19 @@
 
 */
 
-#ifndef BULLET_H
-#define BULLET_H
+#include "GameObjects/Particle.hpp"
 
-#include "GameObjects/GameObject.hpp"
-
-class Bullet : public GameObject
+Particle::Particle(int x, int y, int width, int height, int r, int g, int b) : GameObject(-1, x, y, width, height, true, GameObject::ParticleSystem), particleColor(r, g, b)
 {
-public :
-    enum Type { Crowbar, RocketLauncher, Grenades, ShotGun, MachineGun, Sniper, LaserGun };
-    Bullet(Bullet::Type);
-    virtual ~Bullet();
 
-    unsigned int getRange() { return this->range; }
-    void setRange(unsigned int v) { this->range = v; }
+}
 
-private :
-    unsigned int ownedID;
-    Bullet::Type bulletType;
+Particle::Particle(int x, int y, int width, int height, sf::Color color) : GameObject(-1, x, y, width, height, true, GameObject::ParticleSystem), particleColor(color)
+{
 
-    unsigned int infligedDamages;
-    unsigned int trajectoryType;
-    unsigned int range;
+}
 
-    float acceleration;
-};
+Particle::~Particle()
+{
 
-#endif // BULLEt_H
+}

@@ -29,7 +29,7 @@
 class GameObject
 {
 public :
-    enum Type { Generic, Player, Damager, Environment, Particle };
+    enum Type { Generic, Playable, Projectile, Environment, ParticleSystem };
 
     GameObject();
     GameObject(int, int, int, int, int, bool);
@@ -41,7 +41,8 @@ public :
     void setRelativeX(int x) { this->x += x; }
     void setY(int y) { this->y = y; }
     void setRelativeY(int y) { this->y += y; }
-    void setPosition(int x, int y) { this->x = x; this->y = y; }
+    void setPosition(int x, int y) { this->setX(x); this->setY(y); }
+    void setRelativePosition(int x, int y) { this->setRelativeX(x); this->setRelativeY(y); }
     int getX() { return this->x; }
     int getY() { return this->y; }
     int getWidth() { return this->width; }
@@ -53,7 +54,7 @@ public :
     sf::Vector2i getSpeedVector() { return speedVector; }
     void setSpeedX(int x) { this->speedVector.x = x; }
     void setSpeedY(int y) { this->speedVector.y = y; }
-
+    void setSpeedVector(int sx, int sy) { this->setSpeedX(sx); this->setSpeedY(sy); }
     float getClockTick();
 
 protected :
