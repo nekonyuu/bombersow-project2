@@ -21,14 +21,13 @@
 */
 
 #include <SFML/System.hpp>
-#include <string>
 
 #include "System/Config.hpp"
 
 Config::Config()
 {
-    this->screenWidth = 640;
-    this->screenHeight = 480;
+    this->screenWidth = 800;
+    this->screenHeight = 640;
     this->screenVsync = false;
     this->screenFpsLimit = 100;
     this->playerPseudo = "Player";

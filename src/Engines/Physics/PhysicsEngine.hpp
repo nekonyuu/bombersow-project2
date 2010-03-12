@@ -36,15 +36,20 @@ public :
     PhysicsEngine(int width, int height, Config& config);
     ~PhysicsEngine();
 
-    void AddGO(GameObject*);
-    void UpdateGO(GameObject*);
-    void DeleteGO(GameObject*);
+    void addGO(GameObject*);
+    void updateGO(GameObject*);
+    void deleteGO(GameObject*);
+
+    Collision detectCollisions(GameObject*);
+
+    // DEBUG
+    void ListGO();
 
 private :
     // Correspondence Table between GameObjects and Physics Nodes
-    std::map<GameObject*, ZoneTree*> gameObjectsToNode;
+    std::multimap<GameObject*, ZoneTree*> gameObjectsToNode;
 
-    ZoneTree zonesTree;
+    ZoneTree* zonesTree;
 
     Config& config;
 };
