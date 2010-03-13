@@ -76,6 +76,7 @@
 					<Add option="-O2" />
 					<Add option="-O1" />
 					<Add option="-O" />
+					<Add option="-march=native" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
