@@ -30,7 +30,7 @@ class FastRect
 public :
     FastRect(T, T, T, T);
 
-    bool intersectWith(FastRect<T>);
+    bool intersectWith(const FastRect<T>&);
     T getWidth();
     T getHeight();
 
@@ -47,7 +47,7 @@ FastRect<T>::FastRect(T left, T top, T right, T bottom)
 }
 
 template<typename T>
-bool FastRect<T>::intersectWith(FastRect<T> rect)
+bool FastRect<T>::intersectWith(const FastRect<T>& rect)
 {
     if(rect.left > this->right || rect.right < this->left || rect.top < this->bottom || rect.bottom > this->top)
         return false;
