@@ -33,6 +33,8 @@ public :
     Bullet(Bullet::Type);
     virtual ~Bullet();
 
+    const Bullet::Type& getType() { return bulletType; }
+
     unsigned int getRange() { return this->range; }
     void setRange(unsigned int v) { this->range = v; }
 

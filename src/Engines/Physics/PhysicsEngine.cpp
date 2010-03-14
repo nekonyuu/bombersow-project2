@@ -31,13 +31,9 @@
 #include "GameObjects/Bullet.hpp"
 #include "GameObjects/Particle.hpp"
 
-PhysicsEngine::PhysicsEngine(int width, int height, Config& cfg) : gameObjectsToNode(), config(cfg)
+PhysicsEngine::PhysicsEngine(Config& cfg) : gameObjectsToNode(), zoneHeight(cfg.getScreenHeight()), zoneWidth(cfg.getScreenWidth()), physicsGravityCoef(cfg.getPhysicsGravityCoef()), physicsGravitySpeed(cfg.getPhysicsGravitySpeed())
 {
-    this->zonesTree = new ZoneTree(NULL, NULL, 0, 0, width, height, gameObjectsToNode);
-    this->physicsGravityCoef = config.getPhysicsGravityCoef();
-    this->physicsGravitySpeed = config.getPhysicsGravitySpeed();
-    this->zoneHeight = config.getScreenHeight();
-    this->zoneWidth = config.getScreenWidth();
+    this->zonesTree = new ZoneTree(NULL, NULL, 0, 0, this->zoneWidth, this->zoneHeight, gameObjectsToNode);
 }
 
 PhysicsEngine::~PhysicsEngine()

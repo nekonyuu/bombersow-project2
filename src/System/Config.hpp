@@ -52,7 +52,7 @@ public:
     Config(int width, int height, bool vsync, int fps_limit, bool showfps, std::string pseudo, int move_speed, int jump_speed, int fly_speed, float grav_speed, float grav_coef);
     ~Config();
 
-    int getScreenWidth()
+    const int& getScreenWidth()
     {
         return this->screenWidth;
     }
@@ -62,7 +62,7 @@ public:
         this->screenWidth = val;
     }
 
-    int getScreenHeight()
+    const int& getScreenHeight()
     {
         return this->screenHeight;
     }
@@ -71,7 +71,7 @@ public:
         this->screenHeight = val;
     }
 
-    bool getScreenVsync()
+    const bool& getScreenVsync()
     {
         return this->screenVsync;
     }
@@ -81,7 +81,7 @@ public:
         this->screenVsync = val;
     }
 
-    int getScreenFpsLimit()
+    const int& getScreenFpsLimit()
     {
         return this->screenFpsLimit;
     }
@@ -91,7 +91,7 @@ public:
         this->screenFpsLimit = val;
     }
 
-    bool getScreenShowFps()
+    const bool& getScreenShowFps()
     {
         return this->screenShowFps;
     }
@@ -101,7 +101,7 @@ public:
         this->screenShowFps = val;
     }
 
-    std::string getPlayerPseudo()
+    const std::string& getPlayerPseudo()
     {
         return this->playerPseudo;
     }
@@ -111,7 +111,7 @@ public:
         this->playerPseudo = val;
     }
 
-    int getPlayerMoveSpeed()
+    const int& getPlayerMoveSpeed()
     {
         return this->playerMoveSpeed;
     }
@@ -121,7 +121,7 @@ public:
         this->playerMoveSpeed = val;
     }
 
-    int getPlayerJumpSpeed()
+    const int& getPlayerJumpSpeed()
     {
         return this->playerJumpSpeed;
     }
@@ -131,7 +131,7 @@ public:
         this->playerJumpSpeed = val;
     }
 
-    int getPlayerFlySpeed()
+    const int& getPlayerFlySpeed()
     {
         return this->playerFlySpeed;
     }
@@ -141,7 +141,7 @@ public:
         this->playerFlySpeed = val;
     }
 
-    float getPhysicsGravitySpeed()
+    const float& getPhysicsGravitySpeed()
     {
         return this->physicsGravitySpeed;
     }
@@ -151,7 +151,7 @@ public:
         this->physicsGravitySpeed = val;
     }
 
-    float getPhysicsGravityCoef()
+    const float& getPhysicsGravityCoef()
     {
         return this->physicsGravityCoef;
     }
