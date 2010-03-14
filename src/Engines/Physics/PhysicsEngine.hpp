@@ -33,7 +33,7 @@
 class PhysicsEngine
 {
 public :
-    PhysicsEngine(int width, int height, Config& config);
+    PhysicsEngine(Config& config);
     ~PhysicsEngine();
 
     void addGO(GameObject*);
@@ -51,9 +51,8 @@ private :
 
     ZoneTree* zonesTree;
 
-    Config& config;
-    int zoneHeight, zoneWidth;
-    float physicsGravityCoef, physicsGravitySpeed;
+    const int& zoneHeight, zoneWidth;
+    const float& physicsGravityCoef, physicsGravitySpeed;
 };
 
 #endif // PHYSICSENGINE_H

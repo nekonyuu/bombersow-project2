@@ -35,6 +35,8 @@ public :
     Weapon(Weapon::Type);
     virtual ~Weapon();
 
+    const Weapon::Type& getType() { return type; }
+
     int getCurrentBullets() { return this->currentBullets; }
     int getMaxBullets() { return this->maxBullets; }
 

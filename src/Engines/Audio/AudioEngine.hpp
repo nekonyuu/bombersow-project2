@@ -21,24 +21,36 @@
 
 */
 
-#ifndef PARTICLE_H
-#define PARTICLE_H
+#ifndef AUDIOENGINE_H
+#define AUDIOENGINE_H
 
-#include <SFML/Graphics.hpp>
+#include <map>
+#include <string>
+#include <vector>
 
-#include "GameObjects/GameObject.hpp"
+#include <SFML/Audio.hpp>
 
-class Particle : public GameObject
+class AudioEngine : private sf::Thread
 {
 public :
-    Particle(int, int, int, int, int, int, int);    // From RGB
-    Particle(int, int, int, int, sf::Color);        // From an sf::Color object
-    virtual ~Particle();
+    AudioEngine();
+    ~AudioEngine();
 
-    const sf::Color& getColor() { return particleColor; }
+    void loadSound(std::string name, std::string path);
+    void loadMusic(std::string name, std::string path);
+
+    void playSound(std::string name);
+    void playMusic(std::string name);
+    void stopMusic(std::string name);
 
 private :
-    sf::Color particleColor;
+    virtual void Run();
+
+    std::map<const std::string, sf::SoundBuffer> buffers;
+    std::vector<sf::Sound> sounds;
+    std::map<const std::string, sf::Music*> musics;
+
+    bool running;
 };
 
-#endif // PARTICLE_H
+#endif // AUDIOENGINE_H
