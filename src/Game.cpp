@@ -21,9 +21,11 @@
 
 */
 
+#include <iostream>
+
 #include "Game.hpp"
 
-Game::Game() : config(1024, 600, false, 120, true, "Player", 250, -85, 275, 275.f, 6.66f), drawWindow(sf::VideoMode(config.getScreenWidth(), config.getScreenHeight(), 32), GAME_NAME), gfxEngine(config, drawWindow), physxEngine(config), fxEngine()
+Game::Game() : config(1024, 600, false, 200, true, "Player", 250, -85, 275, 275.f, 6.66f), drawWindow(sf::VideoMode(config.getScreenWidth(), config.getScreenHeight(), 32), GAME_NAME), gfxEngine(config, drawWindow), physxEngine(config), fxEngine()
 {
     this->showFps = config.getScreenShowFps();
 
@@ -64,10 +66,11 @@ void Game::testScreen()
 {
     Config cfg;
     sf::Event Event;
+    sf::Clock timer;
     std::vector<Particle*> particlesVector;
     bool ingame = true;
 
-    for(int i = 0; i < 50000; i++)
+    for(int i = 0; i < 10000; i++)
     {
         Particle *p = new Particle(sf::Randomizer::Random(0, cfg.getScreenWidth()), sf::Randomizer::Random(0, cfg.getScreenHeight()), 1, 1, 255, 0, 0);
         particlesVector.push_back(p);
@@ -79,10 +82,14 @@ void Game::testScreen()
     {
         gfxEngine.clearScreen(255, 255, 255);
 
-        for(int i = 0; i < 50000; i++)
+        timer.Reset();
+
+        for(int i = 0; i < 10000; i++)
             physxEngine.updateGO(particlesVector[i]);
 
         gfxEngine.drawMap();
+
+        std::cout << "Update GO & Screen time : " << timer.GetElapsedTime() << std::endl;
 
         if(showFps)
             gfxEngine.showFPS();
@@ -117,7 +124,7 @@ void Game::testScreen()
     while (ingame);
 
     // Cleaning
-    for(int i = 0; i < 50000; i++)
+    for(int i = 0; i < 10000; i++)
     {
         delete particlesVector[i];
     }

@@ -21,6 +21,7 @@
 
 */
 
+#include <iostream>
 #include <sstream>
 
 #include "Engines/Graphics/GraphicEngine.hpp"
@@ -115,6 +116,8 @@ void GraphicEngine::unload(Particle* part)
 
 void GraphicEngine::drawMap()
 {
+    sf::Clock timer;
+
     for(std::map<GameObject*, sf::Sprite>::iterator itr = goSprites.begin(); itr != goSprites.end(); ++itr)
     {
         itr->second.SetX(itr->first->getX());
@@ -124,16 +127,13 @@ void GraphicEngine::drawMap()
 
     for(std::map<Particle*, Particle*>::iterator itr = particlesList.begin(); itr != particlesList.end(); ++itr)
     {
-        const sf::Color& color = itr->first->getColor();
-        const int x = itr->first->getX(), y = itr->first->getY(), w = itr->first->getWidth(), h = itr->first->getHeight();
-
-        glColor3f(color.r, color.g, color.b);
+        glColor3f(itr->first->getColor().r, itr->first->getColor().g, itr->first->getColor().b);
 
         glBegin(GL_TRIANGLE_STRIP); // Draw with assembled triangles, more optimised on GPUs
-            glVertex2i(x, y);
-            glVertex2i(x + w, y);
-            glVertex2i(x + w, y + h);
-            glVertex2i(x, y + h);
+            glVertex2i(itr->first->getX(), itr->first->getY());
+            glVertex2i(itr->first->getX() + itr->first->getWidth(), itr->first->getY());
+            glVertex2i(itr->first->getX() + itr->first->getWidth(), itr->first->getY() + itr->first->getHeight());
+            glVertex2i(itr->first->getX(), itr->first->getY() + itr->first->getHeight());
         glEnd();
     }
 
@@ -157,6 +157,8 @@ void GraphicEngine::drawMap()
         itr->second.SetY(itr->first->getY());
         drawWindow.Draw(itr->second);
     }
+
+    std::cout << "DrawMap() time : " << timer.GetElapsedTime() << std::endl;
 }
 
 void GraphicEngine::clearScreen(int r, int g, int b)
