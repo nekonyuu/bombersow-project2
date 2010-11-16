@@ -62,9 +62,13 @@ Game::~Game()
 
 }
 
+void Game::menu()
+{
+
+}
+
 void Game::testScreen()
 {
-    Config cfg;
     sf::Event Event;
     sf::Clock timer;
     std::vector<Particle*> particlesVector;
@@ -72,11 +76,13 @@ void Game::testScreen()
 
     for(int i = 0; i < 10000; i++)
     {
-        Particle *p = new Particle(sf::Randomizer::Random(0, cfg.getScreenWidth()), sf::Randomizer::Random(0, cfg.getScreenHeight()), 1, 1, 255, 0, 0);
+        Particle *p = new Particle(sf::Randomizer::Random(0, config.getScreenWidth()), sf::Randomizer::Random(0, config.getScreenHeight()), 1, 1, 255, 0, 0);
         particlesVector.push_back(p);
         physxEngine.addGO(p);
         gfxEngine.load(p);
     }
+
+    fxEngine.playMusic(std::string("menu"));
 
     do
     {

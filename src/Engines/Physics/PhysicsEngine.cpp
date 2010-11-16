@@ -171,6 +171,11 @@ Collision* PhysicsEngine::detectCollisions(GameObject* go)
     return NULL;
 }
 
+void PhysicsEngine::Run()
+{
+
+}
+
 // DEBUG
 void PhysicsEngine::ListGO()
 {

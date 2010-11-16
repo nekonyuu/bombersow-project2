@@ -21,62 +21,54 @@
 
 */
 
+
 #include "Engines/Audio/AudioEngine.hpp"
 
 AudioEngine::AudioEngine()
 {
-    running = true;
-    Launch();
+    // Loading musics
+    loadMusic(std::string("menu"), std::string("sounds/music/ParagonX9 - Metropolis [8-Bit].ogg"));
 }
 
 AudioEngine::~AudioEngine()
 {
-    running = false;
-    Wait();
-    for(std::map<const std::string, sf::Music*>::iterator it = musics.begin(); it != musics.end(); it++)
-        delete it->second;
-}
 
-void AudioEngine::loadSound(std::string name, std::string path)
-{
-    if(!buffers[name].LoadFromFile(path))
-        return;
-}
-
-void AudioEngine::loadMusic(std::string name, std::string path)
-{
-    musics[name] = new sf::Music;
-    if(!musics[name]->OpenFromFile(path))
-        return;
-}
-
-void AudioEngine::playSound(std::string name)
-{
-    sf::Sound sound(buffers[name]);
-    sounds.push_back(sound);
-    sounds.end()->Play();
-}
-
-void AudioEngine::playMusic(std::string name)
-{
-    musics[name]->Play();
-}
-
-void AudioEngine::stopMusic(std::string name)
-{
-    musics[name]->Stop();
 }
 
 void AudioEngine::Run()
 {
-    while(running)
-    {
-        for(std::vector<sf::Sound>::iterator i = sounds.begin(); i != sounds.end(); i++)
-        {
-            if(i->GetStatus() == sf::Sound::Stopped)
-                sounds.erase(i);
-        }
+    // TODO : vidage du vector sounds.
+}
 
-        sf::Sleep(0.5f);
+void AudioEngine::loadSound(std::string name, std::string path)
+{
+    buffers[name].LoadFromFile(path);
+}
+
+void AudioEngine::loadMusic(std::string name, std::string path)
+{
+    sf::Music *music = new sf::Music();
+    music->OpenFromFile(path);
+    musics[name] = music;
+}
+
+void AudioEngine::playSound(std::string name)
+{
+    if(buffers.find(name) != buffers.end())
+    {
+        sf::Sound sound(buffers[name]);
+        sounds.push_back(sound);
+        sounds.back().Play();
     }
+}
+
+void AudioEngine::playMusic(std::string name)
+{
+    if(musics.find(name) != musics.end())
+        musics[name]->Play();
+}
+
+void AudioEngine::stopMusic(std::string name)
+{
+
 }
