@@ -30,11 +30,14 @@
 #include "GameObjects/GameObject.hpp"
 #include "System/Config.hpp"
 
-class PhysicsEngine
+class PhysicsEngine : private sf::Thread
 {
 public :
     PhysicsEngine(Config& config);
     ~PhysicsEngine();
+
+    void start();
+    void stop();
 
     void addGO(GameObject*);
     void updateGO(GameObject*);
@@ -46,6 +49,8 @@ public :
     void ListGO();
 
 private :
+    virtual void Run();
+    bool running;
     // Correspondence Table between GameObjects and Physics Nodes
     std::multimap<GameObject*, ZoneTree*> gameObjectsToNode;
 
